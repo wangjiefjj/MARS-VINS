@@ -12,7 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   image_transport
   cv_bridge
-  message_filter
+  message_filters
   eigen_conversions
 )
 
