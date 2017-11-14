@@ -1,43 +1,147 @@
-cmake_minimum_required(VERSION 2.8)
-include_directories(core/include)
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-set (CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-add_executable(example_app example_program/generic_driver.cpp example_program/vins_example_app.cpp)
-if (ANDROID)
-set (core_lib_dir ${CMAKE_CURRENT_SOURCE_DIR}/core/lib_android64/)
-set (third_party_dir ${CMAKE_CURRENT_SOURCE_DIR}/third_party/lib_android64/)
-elseif(${PLATFORM} STREQUAL "ARM64")
-set (core_lib_dir ${CMAKE_CURRENT_SOURCE_DIR}/core/lib_arm64/)
-set (third_party_dir ${CMAKE_CURRENT_SOURCE_DIR}/third_party/lib_arm64/)
-elseif (${PLATFORM} STREQUAL "x86")
-set (core_lib_dir ${CMAKE_CURRENT_SOURCE_DIR}/core/lib_x86/)
-set (third_party_dir ${CMAKE_CURRENT_SOURCE_DIR}/third_party/lib_x86/)
-endif()
-set (core_lib_dir ${core_lib_dir}/${CAMERA_MODEL})
-message(${core_lib_dir})
-set (LIBS -L${core_lib_dir}
-	  -L${third_party_dir}
-	  -lmars_core
-	  #           liblibpng.a
-	  #           liblibwebp.a
-	  #           libzlib.a
-           -lopencv_contrib
-           -lopencv_nonfree
-           -lopencv_videostab
-           -lopencv_photo
-           -lopencv_objdetect
-           -lopencv_video
-           -lopencv_ml
-           -lopencv_calib3d
-           -lopencv_features2d
-           -lopencv_highgui
-           -lopencv_imgproc
-           -lopencv_core)
+cmake_minimum_required(VERSION 2.8.3)
+project(mars_vins)
 
+## Compile as C++11, supported in ROS Kinetic and newer
+# add_compile_options(-std=c++11)
 
-target_link_libraries(example_app ${LIBS})
+## Find catkin macros and libraries
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  std_msgs
+  nav_msgs
+  sensor_msgs
+  image_transport
+  cv_bridge
+  message_filter
+  eigen_conversions
+)
 
+## System dependencies are found with CMake's conventions
+find_package(Eigen REQUIRED)
 
-set (INSTALL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/build)
-INSTALL(DIRECTORY ${core_lib_dir}/ DESTINATION   ${INSTALL_DIR})
-INSTALL(DIRECTORY ${third_party_dir} DESTINATION ${INSTALL_DIR})
+###################################
+## catkin specific configuration ##
+###################################
+catkin_package(
+  INCLUDE_DIRS core/include/core
+#  LIBRARIES mars_vins
+  CATKIN_DEPENDS
+    roscpp std_msgs nav_msgs sensor_msgs image_transport
+    cv_bridge message_filters eigen_conversions
+  DEPENDS EIGEN
+)
+
+###########
+## Build ##
+###########
+
+## Specify additional locations of header files
+## Your package locations should be listed before other locations
+include_directories(
+  include
+  ${catkin_INCLUDE_DIRS}
+  ${EIGEN_INCLUDE_DIR}
+)
+
+link_directories(
+  ${catkin_LIBRARY_DIRS}
+  ${CMAKE_CURRENT_SOURCE_DIR}/core/lib_x86/
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/lib_x86/
+)
+
+## Declare a C++ library
+# add_library(${PROJECT_NAME}
+#   src/${PROJECT_NAME}/mars_vins.cpp
+# )
+
+## Add cmake target dependencies of the library
+## as an example, code may need to be generated before libraries
+## either from message generation or dynamic reconfigure
+# add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+## Declare a C++ executable
+## With catkin_make all packages are built within a single CMake context
+## The recommended prefix ensures that target names across packages don't collide
+add_executable(mars_vins_node
+  example_program/generic_driver.cpp
+  example_program/vins_example_app.cpp
+)
+
+## Rename C++ executable without prefix
+## The above recommended prefix causes long target names, the following renames the
+## target back to the shorter version for ease of user use
+## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
+# set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX "")
+
+## Add cmake target dependencies of the executable
+## same as for the library above
+add_dependencies(mars_vins_node
+  ${${PROJECT_NAME}_EXPORTED_TARGETS}
+  ${catkin_EXPORTED_TARGETS}
+)
+
+## Specify libraries to link a library or executable target against
+target_link_libraries(${PROJECT_NAME}_node
+  ${catkin_LIBRARIES}
+  -lmars_core
+  -lopencv_contrib
+  -lopencv_nonfree
+  -lopencv_videostab
+  -lopencv_photo
+  -lopencv_objdetect
+  -lopencv_video
+  -lopencv_ml
+  -lopencv_calib3d
+  -lopencv_features2d
+  -lopencv_highgui
+  -lopencv_imgproc
+  -lopencv_core
+)
+
+#############
+## Install ##
+#############
+
+# all install targets should use catkin DESTINATION variables
+# See http://ros.org/doc/api/catkin/html/adv_user_guide/variables.html
+
+## Mark executable scripts (Python etc.) for installation
+## in contrast to setup.py, you can choose the destination
+# install(PROGRAMS
+#   scripts/my_python_script
+#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+# )
+
+## Mark executables and/or libraries for installation
+# install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_node
+#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+# )
+
+## Mark cpp header files for installation
+# install(DIRECTORY include/${PROJECT_NAME}/
+#   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+#   FILES_MATCHING PATTERN "*.h"
+#   PATTERN ".svn" EXCLUDE
+# )
+
+## Mark other files for installation (e.g. launch and bag files, etc.)
+# install(FILES
+#   # myfile1
+#   # myfile2
+#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+# )
+
+#############
+## Testing ##
+#############
+
+## Add gtest based cpp test target and link libraries
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_mars_vins.cpp)
+# if(TARGET ${PROJECT_NAME}-test)
+#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
+# endif()
+
+## Add folders to be run by python nosetests
+# catkin_add_nosetests(test)

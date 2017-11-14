@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>mars_vins</name>
+  <version>0.0.0</version>
+  <description>The mars_vins package</description>
+
+  <maintainer email="sunke.polyu@gmail.com">Ke Sun</maintainer>
+  <license>Copyrighted by the Regents of the University of Minnesota</license>
+
+  <!-- Author tags are optional, multiple are allowed, one per tag -->
+  <!-- Authors do not have to be maintainers, but could be -->
+  <!-- Example: -->
+  <!-- <author email="jane.doe@example.com">Jane Doe</author> -->
+
+  <depend>roscpp</depend>
+  <depend>std_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>image_transport</depend>
+  <depend>cv_bridge</depend>
+  <depend>message_filters</depend>
+  <depend>eigen_conversions</depend>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <export> </export>
+
+</package>
