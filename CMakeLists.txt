@@ -23,12 +23,12 @@ find_package(Eigen REQUIRED)
 ## catkin specific configuration ##
 ###################################
 catkin_package(
-  INCLUDE_DIRS core/include/core
-#  LIBRARIES mars_vins
+  # INCLUDE_DIRS core/include
+  #  LIBRARIES mars_vins
   CATKIN_DEPENDS
     roscpp std_msgs nav_msgs sensor_msgs image_transport
     cv_bridge message_filters eigen_conversions
-  DEPENDS EIGEN
+  DEPENDS eigen
 )
 
 ###########
@@ -38,7 +38,7 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-  include
+  core/include
   ${catkin_INCLUDE_DIRS}
   ${EIGEN_INCLUDE_DIR}
 )
@@ -81,7 +81,7 @@ add_dependencies(mars_vins_node
 )
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(${PROJECT_NAME}_node
+target_link_libraries(mars_vins_node
   ${catkin_LIBRARIES}
   -lmars_core
   -lopencv_contrib
