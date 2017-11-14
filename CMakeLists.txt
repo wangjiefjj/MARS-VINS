@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(mars_vins)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
@@ -17,7 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 ## System dependencies are found with CMake's conventions
-find_package(Eigen REQUIRED)
+find_package(Eigen3 REQUIRED)
 
 ###################################
 ## catkin specific configuration ##
@@ -28,7 +28,7 @@ catkin_package(
   CATKIN_DEPENDS
     roscpp std_msgs nav_msgs sensor_msgs image_transport
     cv_bridge message_filters eigen_conversions
-  DEPENDS eigen
+  DEPENDS EIGEN3
 )
 
 ###########
@@ -40,12 +40,12 @@ catkin_package(
 include_directories(
   core/include
   ${catkin_INCLUDE_DIRS}
-  ${EIGEN_INCLUDE_DIR}
+  ${EIGEN3_INCLUDE_DIR}
 )
 
 link_directories(
   ${catkin_LIBRARY_DIRS}
-  ${CMAKE_CURRENT_SOURCE_DIR}/core/lib_x86/
+  ${CMAKE_CURRENT_SOURCE_DIR}/core/lib_x86/equidistant
   ${CMAKE_CURRENT_SOURCE_DIR}/third_party/lib_x86/
 )
 
