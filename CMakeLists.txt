@@ -63,7 +63,7 @@ link_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(mars_vins_node
-  example_program/generic_driver.cpp
+  example_program/ros_wrapper.cpp
   example_program/vins_example_app.cpp
 )
 
