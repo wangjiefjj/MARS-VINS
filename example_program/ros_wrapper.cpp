@@ -2,7 +2,7 @@
 
 namespace MARS {
 
-GenericDriver::GenericDriver(ros::NodeHandle& n):
+GenericDriver::GenericDriver(const ros::NodeHandle& n):
   nh(n), stereo_sub(10) {
 
   // Create subscribers.
