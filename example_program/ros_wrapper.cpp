@@ -2,10 +2,11 @@
 
 namespace MARS {
 
-GenericDriver::GenericDriver(ros::NodeHandle& n): nh(n) {
+GenericDriver::GenericDriver(ros::NodeHandle& n):
+  nh(n), stereo_sub(10) {
 
   // Create subscribers.
-  imu_sub.subscribe(nh, "imu", 200);
+  imu_sub = nh.subscribe("imu", 200, &GenericDriver::imuCallback, this);
 
   cam0_img_sub.subscribe(nh, "cam0_image", 10);
   cam1_img_sub.subscribe(nh, "cam1_image", 10);
@@ -29,18 +30,18 @@ void GenericDriver::getImage(
 
   free(img->data);
   img->data = (unsigned char*) malloc(
-      width * height * sizeof(unsigned char));
+      img->width * img->height * sizeof(unsigned char));
   cv::Mat cv_img(img->height, img->width, CV_8UC1, img->data);
 
   if (cam_id == 0) {
 
-    img->timestamp = cam0_img->header.stamp.toSec();
-    cam0_img->image.copyTo(cv_img);
+    img->timestamp = cam0_img_ptr->header.stamp.toSec();
+    cam0_img_ptr->image.copyTo(cv_img);
 
   } else if (cam_id == 1) {
 
-    img->timestamp = cam1_img->header.stamp.toSec();
-    cam1_img->image.copyTo(cv_img);
+    img->timestamp = cam1_img_ptr->header.stamp.toSec();
+    cam1_img_ptr->image.copyTo(cv_img);
 
   } else {
     ROS_ERROR("Cannot find camera %d...", cam_id);

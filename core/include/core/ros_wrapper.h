@@ -4,9 +4,9 @@
 #include <vector>
 
 #include <ros/ros.h>
-#include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/Image.h>
+#include <sensor_msgs/Imu.h>
 #include <nav_msgs/Odometry.h>
 #include <message_filters/subscriber.h>
 #include <message_filters/time_synchronizer.h>
@@ -62,7 +62,7 @@ private:
 
 
   // Imu message buffer.
-  std::vector<sensor_msgs::Imu> img_msg_buffer;
+  std::vector<sensor_msgs::Imu> imu_msg_buffer;
 
   // Latest stereo images.
   cv_bridge::CvImageConstPtr cam0_img_ptr;
