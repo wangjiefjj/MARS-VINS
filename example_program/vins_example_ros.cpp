@@ -19,14 +19,14 @@ void stereoCallback(
   odometry->header.frame_id = "map";
   odometry->child_frame_id = "odom";
 
-  odometry->pose.pose.position.x = pose.global_P_imu[0];
-  odometry->pose.pose.position.y = pose.global_P_imu[1];
-  odometry->pose.pose.position.z = pose.global_P_imu[2];
+  odom_msg_ptr->pose.pose.position.x = pose.global_P_imu[0];
+  odom_msg_ptr->pose.pose.position.y = pose.global_P_imu[1];
+  odom_msg_ptr->pose.pose.position.z = pose.global_P_imu[2];
 
-  odometry->pose.pose.orientation.x = pose.imu_q_global[0];
-  odometry->pose.pose.orientation.y = pose.imu_q_global[1];
-  odometry->pose.pose.orientation.z = pose.imu_q_global[2];
-  odometry->pose.pose.orientation.w = pose.imu_q_global[3];
+  odom_msg_ptr->pose.pose.orientation.x = pose.imu_q_global[0];
+  odom_msg_ptr->pose.pose.orientation.y = pose.imu_q_global[1];
+  odom_msg_ptr->pose.pose.orientation.z = pose.imu_q_global[2];
+  odom_msg_ptr->pose.pose.orientation.w = pose.imu_q_global[3];
 
   odom_pub->publish(odom_msg_ptr);
 
@@ -50,7 +50,7 @@ int main(int argc, char** argv) {
 
   // Odometry publisher.
   ros::Publisher odom_pub;
-  odom_pub = nh.advertise("odom", 40);
+  odom_pub = nh.advertise<nav_msgs::Odometry>("odom", 40);
 
   // Initialize the ros wrapper for vins.
   std::unique_ptr<MARS::GenericDriver> driver =
@@ -72,9 +72,8 @@ int main(int argc, char** argv) {
   cam0_img_sub.subscribe(nh, "dummy_cam0_image", 10);
   cam1_img_sub.subscribe(nh, "dummy_cam1_image", 10);
   stereo_sub.connectInput(cam0_img_sub, cam1_img_sub);
-  stereo_sub.registerCallback(
-      boost::bind(&GenericDriver::stereoCallback,
-        this, _1, _2, &odom_pub, &mars_vins));
+  stereo_sub.registerCallback(boost::bind(
+        stereoCallback, _1, _2, &odom_pub, &mars_vins));
 
   ros::spin();
 
