@@ -10,10 +10,8 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   nav_msgs
   sensor_msgs
-  image_transport
   cv_bridge
   message_filters
-  eigen_conversions
 )
 
 ## System dependencies are found with CMake's conventions
@@ -26,8 +24,7 @@ catkin_package(
   # INCLUDE_DIRS core/include
   #  LIBRARIES mars_vins
   CATKIN_DEPENDS
-    roscpp std_msgs nav_msgs sensor_msgs image_transport
-    cv_bridge message_filters eigen_conversions
+    roscpp std_msgs nav_msgs sensor_msgs cv_bridge message_filters
   DEPENDS EIGEN3
 )
 
@@ -64,7 +61,7 @@ link_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(mars_vins_node
   example_program/ros_wrapper.cpp
-  example_program/vins_example_app.cpp
+  example_program/vins_example_ros.cpp
 )
 
 ## Rename C++ executable without prefix

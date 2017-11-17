@@ -16,10 +16,14 @@
   <depend>std_msgs</depend>
   <depend>nav_msgs</depend>
   <depend>sensor_msgs</depend>
+  <!--
   <depend>image_transport</depend>
+  -->
   <depend>cv_bridge</depend>
   <depend>message_filters</depend>
+  <!--
   <depend>eigen_conversions</depend>
+  -->
 
   <buildtool_depend>catkin</buildtool_depend>
 

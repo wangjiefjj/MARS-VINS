@@ -46,6 +46,7 @@ public:
   void startIMU();
   void getIMU(Generic_IMU* imu);
 
+
   //typedef boost::shared_ptr<GenericDriver> Ptr;
   //typedef boost::shared_ptr<const GenericDriver> ConstPtr;
 
@@ -67,7 +68,6 @@ private:
   // Latest stereo images.
   cv_bridge::CvImageConstPtr cam0_img_ptr;
   cv_bridge::CvImageConstPtr cam1_img_ptr;
-
 
   // Ros node handle.
   ros::NodeHandle nh;
