@@ -4,22 +4,14 @@
 #include <core/ros_wrapper.h>
 #include <core/mars-vins-facade.h>
 
-// Odometry publisher.
-ros::Publisher odom_pub;
-// Stereo subscriber.
-message_filters::Subscriber<
-  sensor_msgs::Image> cam0_img_sub;
-message_filters::Subscriber<
-  sensor_msgs::Image> cam1_img_sub;
-message_filters::TimeSynchronizer<
-  sensor_msgs::Image, sensor_msgs::Image> stereo_sub(10);
-
 void stereoCallback(
   const sensor_msgs::ImageConstPtr& cam0_img,
-  const sensor_msgs::ImageConstPtr& cam1_img) {
+  const sensor_msgs::ImageConstPtr& cam1_img,
+  ros::Publisher* odom_pub,
+  MARS::MARSVinsFacade* mars_vins) {
 
   MARS::Pose pose;
-  mars_vins.GetPose(&pose);
+  mars_vins->GetPose(&pose);
 
   // Set the odometry msg.
   nav_msgs::OdometryPtr odom_msg_ptr(new nav_msgs::Odometry);
@@ -36,7 +28,7 @@ void stereoCallback(
   odometry->pose.pose.orientation.z = pose.imu_q_global[2];
   odometry->pose.pose.orientation.w = pose.imu_q_global[3];
 
-  odom_pub.publish(odom_msg_ptr);
+  odom_pub->publish(odom_msg_ptr);
 
   return;
 }
@@ -57,14 +49,8 @@ int main(int argc, char** argv) {
     ROS_ERROR("Cannot get output file...");
 
   // Odometry publisher.
+  ros::Publisher odom_pub;
   odom_pub = nh.advertise("odom", 40);
-
-  // Stereo subscriber.
-  // The subscriber callback is used to trigger the vins algorithm.
-  cam0_img_sub.subscribe(nh, "dummy_cam0_image", 10);
-  cam1_img_sub.subscribe(nh, "dummy_cam1_image", 10);
-  stereo_sub.connectInput(cam0_img_sub, cam1_img_sub);
-  stereo_sub.registerCallback(&GenericDriver::stereoCallback, this);
 
   // Initialize the ros wrapper for vins.
   std::unique_ptr<MARS::GenericDriver> driver =
@@ -73,6 +59,22 @@ int main(int argc, char** argv) {
   // Create the vins interface.
   MARS::MARSVinsFacade mars_vins(
       std::move(driver), calib_file.c_str(), output_file.c_str());
+
+  // Stereo subscriber.
+  // The subscriber callback is used to trigger the vins algorithm.
+  message_filters::Subscriber<
+    sensor_msgs::Image> cam0_img_sub;
+  message_filters::Subscriber<
+    sensor_msgs::Image> cam1_img_sub;
+  message_filters::TimeSynchronizer<
+    sensor_msgs::Image, sensor_msgs::Image> stereo_sub(10);
+
+  cam0_img_sub.subscribe(nh, "dummy_cam0_image", 10);
+  cam1_img_sub.subscribe(nh, "dummy_cam1_image", 10);
+  stereo_sub.connectInput(cam0_img_sub, cam1_img_sub);
+  stereo_sub.registerCallback(
+      boost::bind(&GenericDriver::stereoCallback,
+        this, _1, _2, &odom_pub, &mars_vins));
 
   ros::spin();
 
