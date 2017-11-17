@@ -15,9 +15,9 @@ void stereoCallback(
 
   // Set the odometry msg.
   nav_msgs::OdometryPtr odom_msg_ptr(new nav_msgs::Odometry);
-  odometry->header = cam0_img->header;
-  odometry->header.frame_id = "map";
-  odometry->child_frame_id = "odom";
+  odom_msg_ptr->header = cam0_img->header;
+  odom_msg_ptr->header.frame_id = "map";
+  odom_msg_ptr->child_frame_id = "odom";
 
   odom_msg_ptr->pose.pose.position.x = pose.global_P_imu[0];
   odom_msg_ptr->pose.pose.position.y = pose.global_P_imu[1];
