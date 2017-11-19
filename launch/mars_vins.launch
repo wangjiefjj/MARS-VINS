@@ -1,0 +1,33 @@
+<launch>
+
+  <arg name="robot" default="sierra"/>
+  <arg name="calibration_file" default="euroc_config.txt"/>
+
+  <!-- Benchmark node -->
+  <!--
+  <node name="benckmark" pkg="benchmark_publisher"
+    type="benchmark_publisher">
+    <param name="data_name" type="string"
+      value="$(find benchmark_publisher)/config/V2_03_difficult/data.csv" />
+    <remap from="~estimated_odometry" to="/$(arg robot)/vio/odom" />
+  </node>
+  -->
+
+  <!-- Msckf Vio Nodelet  -->
+  <group ns="$(arg robot)">
+    <node pkg="MARS-VINS" type="mars_vins_node" name="mars_vins"
+      output="screen">
+
+      <param name="calib_file" value="$(find MARS-VINS)/config/$(arg calibration_file)"/>
+      <param name="output_file" value="mars_vins_output.txt"/>
+
+      <remap from="~imu" to="sync/imu/imu"/>
+      <remap from="~cam0_image" to="sync/cam0/image_raw"/>
+      <remap from="~cam1_image" to="sync/cam1/image_raw"/>
+      <remap from="~dummy_cam0_image" to="sync/cam0/image_raw"/>
+      <remap from="~dummy_cam1_image" to="sync/cam1/image_raw"/>
+
+    </node>
+  </group>
+
+</launch>
