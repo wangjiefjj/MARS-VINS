@@ -49,19 +49,23 @@ int main(int argc, char** argv) {
     ROS_ERROR("Cannot get output file...");
 
   // Odometry publisher.
+  ROS_INFO("Initialize odom publisher...");
   ros::Publisher odom_pub;
   odom_pub = nh.advertise<nav_msgs::Odometry>("odom", 40);
 
   // Initialize the ros wrapper for vins.
+  ROS_INFO("Initialize ros wrapper...");
   std::unique_ptr<MARS::GenericDriver> driver =
     std::unique_ptr<MARS::GenericDriver>(new MARS::GenericDriver(nh));
 
   // Create the vins interface.
+  ROS_INFO("Initialize mars vins...");
   MARS::MARSVinsFacade mars_vins(
       std::move(driver), calib_file.c_str(), output_file.c_str());
 
   // Stereo subscriber.
   // The subscriber callback is used to trigger the vins algorithm.
+  ROS_INFO("Initialize stereo subscriber...");
   message_filters::Subscriber<
     sensor_msgs::Image> cam0_img_sub;
   message_filters::Subscriber<
@@ -75,6 +79,7 @@ int main(int argc, char** argv) {
   stereo_sub.registerCallback(boost::bind(
         stereoCallback, _1, _2, &odom_pub, &mars_vins));
 
+  ROS_INFO("Start ros spin...");
   ros::spin();
 
   return 0;
