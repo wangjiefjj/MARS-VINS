@@ -24,6 +24,8 @@ void GenericDriver::startCamera(int cam_id) {
 void GenericDriver::getImage(
     struct Generic_Image* img, int cam_id) {
 
+  if (!cam0_img_ptr || !cam1_img_ptr) return;
+
   img->height = 800;
   img->width = 960;
   img->stride = img->width;
@@ -55,6 +57,8 @@ void GenericDriver::startIMU() {
 }
 
 void GenericDriver::getIMU(Generic_IMU* imu) {
+
+  if (imu_msg_buffer.size() == 0) return;
 
   // Get the oldest IMU msg.
   const sensor_msgs::Imu& imu_msg = imu_msg_buffer[0];
