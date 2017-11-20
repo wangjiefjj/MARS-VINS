@@ -15,11 +15,11 @@
 
   <!-- Msckf Vio Nodelet  -->
   <group ns="$(arg robot)">
-    <node pkg="MARS-VINS" type="mars_vins_node" name="mars_vins"
+    <node pkg="mars_vins" type="mars_vins_node" name="mars_vins"
       output="screen">
 
-      <param name="calib_file" value="$(find MARS-VINS)/config/$(arg calibration_file)"/>
-      <param name="output_file" value="mars_vins_output.txt"/>
+      <param name="calib_file" type="string" value="$(find mars_vins)/config/$(arg calibration_file)"/>
+      <param name="output_file" type="string" value="mars_vins_output.txt"/>
 
       <remap from="~imu" to="sync/imu/imu"/>
       <remap from="~cam0_image" to="sync/cam0/image_raw"/>
