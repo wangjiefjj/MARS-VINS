@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
 
   // Initialize ros.
   ros::init(argc, argv, "~");
-  ros::NodeHandle nh;
+  ros::NodeHandle nh("~");
 
   // Get the path for calibration file and output file.
   std::string calib_file;
