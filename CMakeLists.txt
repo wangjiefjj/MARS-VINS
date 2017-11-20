@@ -42,7 +42,7 @@ include_directories(
 
 link_directories(
   ${catkin_LIBRARY_DIRS}
-  ${CMAKE_CURRENT_SOURCE_DIR}/core/lib_x86/equidistant
+  ${CMAKE_CURRENT_SOURCE_DIR}/core/lib_x86/radial_tangential
   ${CMAKE_CURRENT_SOURCE_DIR}/third_party/lib_x86/
 )
 
