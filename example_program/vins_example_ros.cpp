@@ -10,7 +10,13 @@ void stereoCallback(
   ros::Publisher* odom_pub,
   MARS::MARSVinsFacade* mars_vins) {
 
+  //Run mars vins.
+  ROS_INFO("Run single image...");
+  mars_vins->RunSingleImage();
+
+  // Get pose from vins.
   MARS::Pose pose;
+  ROS_INFO("Get pose...");
   mars_vins->GetPose(&pose);
 
   // Set the odometry msg.

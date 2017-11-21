@@ -1,6 +1,6 @@
 <launch>
 
-  <arg name="robot" default="sierra"/>
+  <arg name="robot" default="firefly_sbx"/>
   <arg name="calibration_file" default="euroc_config.txt"/>
 
   <!-- Benchmark node -->
@@ -16,16 +16,16 @@
   <!-- Msckf Vio Nodelet  -->
   <group ns="$(arg robot)">
     <node pkg="mars_vins" type="mars_vins_node" name="mars_vins"
-      output="screen">
+       output="screen">
 
       <param name="calib_file" type="string" value="$(find mars_vins)/config/$(arg calibration_file)"/>
       <param name="output_file" type="string" value="mars_vins_output.txt"/>
 
-      <remap from="~imu" to="sync/imu/imu"/>
-      <remap from="~cam0_image" to="sync/cam0/image_raw"/>
-      <remap from="~cam1_image" to="sync/cam1/image_raw"/>
-      <remap from="~dummy_cam0_image" to="sync/cam0/image_raw"/>
-      <remap from="~dummy_cam1_image" to="sync/cam1/image_raw"/>
+      <remap from="~imu" to="/imu0"/>
+      <remap from="~cam0_image" to="/cam0/image_raw"/>
+      <remap from="~cam1_image" to="/cam1/image_raw"/>
+      <remap from="~dummy_cam0_image" to="/cam0/image_raw"/>
+      <remap from="~dummy_cam1_image" to="/cam1/image_raw"/>
 
     </node>
   </group>

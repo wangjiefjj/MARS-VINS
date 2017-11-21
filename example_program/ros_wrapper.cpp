@@ -26,22 +26,24 @@ void GenericDriver::getImage(
 
   if (!cam0_img_ptr || !cam1_img_ptr) return;
 
-  img->height = 800;
-  img->width = 960;
+  img->height = cam0_img_ptr->image.rows;
+  img->width = cam0_img_ptr->image.cols;
   img->stride = img->width;
 
-  free(img->data);
+  //if (img->data != NULL) free(img->data);
   img->data = (unsigned char*) malloc(
       img->width * img->height * sizeof(unsigned char));
   cv::Mat cv_img(img->height, img->width, CV_8UC1, img->data);
 
   if (cam_id == 0) {
 
+    ROS_INFO("Get image from cam0...");
     img->timestamp = cam0_img_ptr->header.stamp.toSec();
     cam0_img_ptr->image.copyTo(cv_img);
 
   } else if (cam_id == 1) {
 
+    ROS_INFO("Get image from cam1...");
     img->timestamp = cam1_img_ptr->header.stamp.toSec();
     cam1_img_ptr->image.copyTo(cv_img);
 
@@ -60,6 +62,7 @@ void GenericDriver::getIMU(Generic_IMU* imu) {
 
   if (imu_msg_buffer.size() == 0) return;
 
+  ROS_INFO("Get imu...");
   // Get the oldest IMU msg.
   const sensor_msgs::Imu& imu_msg = imu_msg_buffer[0];
 
